@@ -10,7 +10,7 @@ import { globSync } from 'glob';
 import * as middlewares from './middlewares';
 import helloWorld from './api';
 
-const app = express();
+let app = express();
 
 app.use(morgan('dev'));
 app.use(helmet());
@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.use('/', helloWorld);
 
-const routes = globSync('**/*.json', {
+let routes = globSync('**/*.json', {
   ignore: [
     'package.json',
     'package-lock.json',
@@ -30,13 +30,18 @@ const routes = globSync('**/*.json', {
 })
   .map(file => JSON.parse(fs.readFileSync(path.resolve(file), 'utf8')));
 
-for (const route of routes) {
+for (let route of routes) {
   let method = String(route.method).toLowerCase() as keyof typeof app;
+
+  if (!['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
+    console.log(`Invalid method ${method} for route ${route.path}`);
+    continue;
+  }
 
   app[method](
     route.path,
     (req: express.Request, res: express.Response) => {
-      const firstResponse = route.responses[0];
+      let firstResponse = route.responses[0];
 
       return res.json(firstResponse);
     });

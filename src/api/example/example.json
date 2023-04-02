@@ -1,0 +1,35 @@
+{
+  "title": "Create thing for username",
+  "path": "/thing-service/:username/thing",
+  "params": {
+    "username": {
+      "value": "johndoe",
+      "help": "The owner's username"
+    }
+  },
+  "method": "POST",
+  "payload": {
+    "thing": {
+      "name": "Foobar",
+      "color": "Blue"
+    }
+  },
+  "responses": [
+    {
+      "status": 200,
+      "response": {
+        "message": "Thing created successfully!"
+      }
+    },
+    {
+      "status": 400,
+      "response": {
+        "errors": [
+          {
+            "detail": "Invalid submitted form"
+          }
+        ]
+      }
+    }
+  ]
+}
